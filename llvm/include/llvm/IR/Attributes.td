@@ -203,6 +203,9 @@ def NoProfile : EnumAttr<"noprofile", [FnAttr]>;
 // functions into it.
 def SkipProfile : EnumAttr<"skipprofile", [FnAttr]>;
 
+/// This function affects the display of short backtraces when displayed by the Rust standard library panic hook.
+def ShortBacktrace : IntAttr<"shortbacktrace", [FnAttr]>;
+
 /// Function doesn't unwind stack.
 def NoUnwind : EnumAttr<"nounwind", [FnAttr]>;
 

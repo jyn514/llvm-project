@@ -1875,6 +1875,8 @@ Error MetadataLoader::MetadataLoaderImpl::parseOneMetadata(
          HasThisAdj ? Record[16 + OffsetB] : 0,   // thisAdjustment
          Flags,                                   // flags
          SPFlags,                                 // SPFlags
+         // TODO: parse this from the record
+         std::nullopt,                            // shortBacktrace
          HasUnit ? CUorFn : nullptr,              // unit
          getMDOrNull(Record[13 + OffsetB]),       // templateParams
          getMDOrNull(Record[14 + OffsetB]),       // declaration

@@ -803,6 +803,7 @@ namespace llvm {
                    DIFile *File, unsigned LineNo, DISubroutineType *Ty,
                    unsigned ScopeLine, DINode::DIFlags Flags = DINode::FlagZero,
                    DISubprogram::DISPFlags SPFlags = DISubprogram::SPFlagZero,
+                   std::optional<ShortBacktraceAttr> ShortBacktrace = std::nullopt,
                    DITemplateParameterArray TParams = nullptr,
                    DISubprogram *Decl = nullptr,
                    DITypeArray ThrownTypes = nullptr,
@@ -816,6 +817,7 @@ namespace llvm {
         unsigned LineNo, DISubroutineType *Ty, unsigned ScopeLine,
         DINode::DIFlags Flags = DINode::FlagZero,
         DISubprogram::DISPFlags SPFlags = DISubprogram::SPFlagZero,
+        std::optional<ShortBacktraceAttr> ShortBacktrace = std::nullopt,
         DITemplateParameterArray TParams = nullptr,
         DISubprogram *Decl = nullptr, DITypeArray ThrownTypes = nullptr);
 
@@ -845,6 +847,7 @@ namespace llvm {
                  DIType *VTableHolder = nullptr,
                  DINode::DIFlags Flags = DINode::FlagZero,
                  DISubprogram::DISPFlags SPFlags = DISubprogram::SPFlagZero,
+                 std::optional<ShortBacktraceAttr> ShortBacktrace = std::nullopt,
                  DITemplateParameterArray TParams = nullptr,
                  DITypeArray ThrownTypes = nullptr);
 

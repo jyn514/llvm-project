@@ -88,7 +88,7 @@ protected:
   DISubprogram *getSubprogram() {
     return DISubprogram::getDistinct(
         Context, nullptr, "", "", nullptr, 0, nullptr, 0, nullptr, 0, 0,
-        DINode::FlagZero, DISubprogram::SPFlagZero, nullptr);
+        DINode::FlagZero, DISubprogram::SPFlagZero, std::nullopt, nullptr);
   }
   DIFile *getFile() {
     return DIFile::getDistinct(Context, "file.c", "/path/to/dir");
@@ -123,6 +123,9 @@ protected:
     return Function::Create(
         FunctionType::get(Type::getVoidTy(Context), std::nullopt, false),
         Function::ExternalLinkage, Name, M);
+  }
+  std::optional<ShortBacktraceAttr> getShortBacktrace() {
+    return ShortBacktraceAttr::SkipFrame;
   }
 };
 typedef MetadataTest MDStringTest;
@@ -980,10 +983,10 @@ TEST_F(DILocationTest, Merge) {
     auto *F = getFile();
     auto *SP1 = DISubprogram::getDistinct(Context, F, "a", "a", F, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
     auto *SP2 = DISubprogram::getDistinct(Context, F, "b", "b", F, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *I = DILocation::get(Context, 2, 7, N);
     auto *A = DILocation::get(Context, 1, 6, SP1, I);
@@ -1000,10 +1003,10 @@ TEST_F(DILocationTest, Merge) {
     auto *F = getFile();
     auto *SP1 = DISubprogram::getDistinct(Context, F, "a", "a", F, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
     auto *SP2 = DISubprogram::getDistinct(Context, F, "b", "b", F, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *IA = DILocation::get(Context, 2, 7, N);
     auto *IB = DILocation::get(Context, 2, 8, N);
@@ -1037,15 +1040,15 @@ TEST_F(DILocationTest, Merge) {
 
     auto *SPA = DISubprogram::getDistinct(Context, FA, "a", "a", FA, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *SPB = DISubprogram::getDistinct(Context, FB, "b", "b", FB, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *SPI = DISubprogram::getDistinct(Context, FI, "i", "i", FI, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *I = DILocation::get(Context, 3, 8, SPI);
     auto *A = DILocation::get(Context, 2, 7, SPA, I);
@@ -1067,15 +1070,15 @@ TEST_F(DILocationTest, Merge) {
 
     auto *SPA = DISubprogram::getDistinct(Context, FA, "a", "a", FA, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *SPB = DISubprogram::getDistinct(Context, FB, "b", "b", FB, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *SPI = DISubprogram::getDistinct(Context, FI, "i", "i", FI, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *SPAScope = DILexicalBlock::getDistinct(Context, SPA, FA, 4, 9);
 
@@ -1100,15 +1103,15 @@ TEST_F(DILocationTest, Merge) {
 
     auto *SPA = DISubprogram::getDistinct(Context, FA, "a", "a", FA, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *SPB = DISubprogram::getDistinct(Context, FB, "b", "b", FB, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *SPC = DISubprogram::getDistinct(Context, FC, "c", "c", FC, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *A = DILocation::get(Context, 3, 2, SPA);
     auto *B = DILocation::get(Context, 2, 4, SPB, A);
@@ -1130,15 +1133,15 @@ TEST_F(DILocationTest, Merge) {
 
     auto *SPA = DISubprogram::getDistinct(Context, FA, "a", "a", FA, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *SPB = DISubprogram::getDistinct(Context, FB, "b", "b", FB, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *SPC = DISubprogram::getDistinct(Context, FC, "c", "c", FC, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *A = DILocation::get(Context, 10, 20, SPA);
     auto *B1 = DILocation::get(Context, 3, 2, SPB, A);
@@ -1168,11 +1171,11 @@ TEST_F(DILocationTest, Merge) {
 
     auto *SPA = DISubprogram::getDistinct(Context, FA, "a", "a", FA, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *SPI = DISubprogram::getDistinct(Context, FI, "i", "i", FI, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     // Nearest common scope for the two locations in a.
     auto *SPAScope1 = DILexicalBlock::getDistinct(Context, SPA, FA, 4, 9);
@@ -1208,15 +1211,15 @@ TEST_F(DILocationTest, Merge) {
 
     auto *SPA = DISubprogram::getDistinct(Context, FA, "a", "a", FA, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *SPB = DISubprogram::getDistinct(Context, FB, "b", "b", FB, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *SPI = DISubprogram::getDistinct(Context, FI, "i", "i", FI, 0, nullptr,
                                           0, nullptr, 0, 0, DINode::FlagZero,
-                                          DISubprogram::SPFlagZero, nullptr);
+                                          DISubprogram::SPFlagZero, std::nullopt, nullptr);
 
     auto *SPAScope1 = DILexicalBlock::getDistinct(Context, SPA, FA, 4, 9);
     auto *SPAScope2 = DILexicalBlock::getDistinct(Context, SPA, FA, 8, 3);
@@ -2554,10 +2557,11 @@ TEST_F(DISubprogramTest, get) {
   assert(!IsLocalToUnit && IsDefinition && !IsOptimized &&
          "bools and SPFlags have to match");
   SPFlags |= DISubprogram::SPFlagDefinition;
+  std::optional<ShortBacktraceAttr> ShortBacktrace = getShortBacktrace();
 
   auto *N = DISubprogram::get(
       Context, Scope, Name, LinkageName, File, Line, Type, ScopeLine,
-      ContainingType, VirtualIndex, ThisAdjustment, Flags, SPFlags, Unit,
+      ContainingType, VirtualIndex, ThisAdjustment, Flags, SPFlags, ShortBacktrace, Unit,
       TemplateParams, Declaration, RetainedNodes, ThrownTypes, Annotations,
       TargetFuncName);
 
@@ -2586,121 +2590,121 @@ TEST_F(DISubprogramTest, get) {
   EXPECT_EQ(TargetFuncName, N->getTargetFuncName());
   EXPECT_EQ(N, DISubprogram::get(Context, Scope, Name, LinkageName, File, Line,
                                  Type, ScopeLine, ContainingType, VirtualIndex,
-                                 ThisAdjustment, Flags, SPFlags, Unit,
+                                 ThisAdjustment, Flags, SPFlags, ShortBacktrace, Unit,
                                  TemplateParams, Declaration, RetainedNodes,
                                  ThrownTypes, Annotations, TargetFuncName));
 
   EXPECT_NE(N, DISubprogram::get(Context, getCompositeType(), Name, LinkageName,
                                  File, Line, Type, ScopeLine, ContainingType,
                                  VirtualIndex, ThisAdjustment, Flags, SPFlags,
-                                 Unit, TemplateParams, Declaration,
+                                 ShortBacktrace, Unit, TemplateParams, Declaration,
                                  RetainedNodes, ThrownTypes, Annotations,
                                  TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(Context, Scope, "other", LinkageName, File,
                                  Line, Type, ScopeLine, ContainingType,
                                  VirtualIndex, ThisAdjustment, Flags, SPFlags,
-                                 Unit, TemplateParams, Declaration,
+                                 ShortBacktrace, Unit, TemplateParams, Declaration,
                                  RetainedNodes, ThrownTypes, Annotations,
                                  TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(Context, Scope, Name, "other", File, Line,
                                  Type, ScopeLine, ContainingType, VirtualIndex,
-                                 ThisAdjustment, Flags, SPFlags, Unit,
+                                 ThisAdjustment, Flags, SPFlags, ShortBacktrace, Unit,
                                  TemplateParams, Declaration, RetainedNodes,
                                  ThrownTypes, Annotations, TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(Context, Scope, Name, LinkageName, getFile(),
                                  Line, Type, ScopeLine, ContainingType,
                                  VirtualIndex, ThisAdjustment, Flags, SPFlags,
-                                 Unit, TemplateParams, Declaration,
+                                 ShortBacktrace, Unit, TemplateParams, Declaration,
                                  RetainedNodes, ThrownTypes, Annotations,
                                  TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(Context, Scope, Name, LinkageName, File,
                                  Line + 1, Type, ScopeLine, ContainingType,
                                  VirtualIndex, ThisAdjustment, Flags, SPFlags,
-                                 Unit, TemplateParams, Declaration,
+                                 ShortBacktrace, Unit, TemplateParams, Declaration,
                                  RetainedNodes, ThrownTypes, Annotations,
                                  TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(Context, Scope, Name, LinkageName, File, Line,
                                  getSubroutineType(), ScopeLine, ContainingType,
                                  VirtualIndex, ThisAdjustment, Flags, SPFlags,
-                                 Unit, TemplateParams, Declaration,
+                                 ShortBacktrace, Unit, TemplateParams, Declaration,
                                  RetainedNodes, ThrownTypes, Annotations,
                                  TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(
                    Context, Scope, Name, LinkageName, File, Line, Type,
                    ScopeLine, ContainingType, VirtualIndex, ThisAdjustment,
-                   Flags, SPFlags ^ DISubprogram::SPFlagLocalToUnit, Unit,
+                   Flags, SPFlags ^ DISubprogram::SPFlagLocalToUnit, ShortBacktrace, Unit,
                    TemplateParams, Declaration, RetainedNodes, ThrownTypes,
                    Annotations, TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(
                    Context, Scope, Name, LinkageName, File, Line, Type,
                    ScopeLine, ContainingType, VirtualIndex, ThisAdjustment,
-                   Flags, SPFlags ^ DISubprogram::SPFlagDefinition, Unit,
+                   Flags, SPFlags ^ DISubprogram::SPFlagDefinition, ShortBacktrace, Unit,
                    TemplateParams, Declaration, RetainedNodes, ThrownTypes,
                    Annotations, TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(Context, Scope, Name, LinkageName, File, Line,
                                  Type, ScopeLine + 1, ContainingType,
                                  VirtualIndex, ThisAdjustment, Flags, SPFlags,
-                                 Unit, TemplateParams, Declaration,
+                                 ShortBacktrace, Unit, TemplateParams, Declaration,
                                  RetainedNodes, ThrownTypes, Annotations,
                                  TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(Context, Scope, Name, LinkageName, File, Line,
                                  Type, ScopeLine, getCompositeType(),
                                  VirtualIndex, ThisAdjustment, Flags, SPFlags,
-                                 Unit, TemplateParams, Declaration,
+                                 ShortBacktrace, Unit, TemplateParams, Declaration,
                                  RetainedNodes, ThrownTypes, Annotations,
                                  TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(
                    Context, Scope, Name, LinkageName, File, Line, Type,
                    ScopeLine, ContainingType, VirtualIndex, ThisAdjustment,
-                   Flags, SPFlags ^ DISubprogram::SPFlagVirtual, Unit,
+                   Flags, SPFlags ^ DISubprogram::SPFlagVirtual, ShortBacktrace, Unit,
                    TemplateParams, Declaration, RetainedNodes, ThrownTypes,
                    Annotations, TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(Context, Scope, Name, LinkageName, File, Line,
                                  Type, ScopeLine, ContainingType,
                                  VirtualIndex + 1, ThisAdjustment, Flags,
-                                 SPFlags, Unit, TemplateParams, Declaration,
+                                 SPFlags, ShortBacktrace, Unit, TemplateParams, Declaration,
                                  RetainedNodes, ThrownTypes, Annotations,
                                  TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(
                    Context, Scope, Name, LinkageName, File, Line, Type,
                    ScopeLine, ContainingType, VirtualIndex, ThisAdjustment,
-                   Flags, SPFlags ^ DISubprogram::SPFlagOptimized, Unit,
+                   Flags, SPFlags ^ DISubprogram::SPFlagOptimized, ShortBacktrace, Unit,
                    TemplateParams, Declaration, RetainedNodes, ThrownTypes,
                    Annotations, TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(Context, Scope, Name, LinkageName, File, Line,
                                  Type, ScopeLine, ContainingType, VirtualIndex,
-                                 ThisAdjustment, Flags, SPFlags, nullptr,
+                                 ThisAdjustment, Flags, SPFlags, ShortBacktrace, nullptr,
                                  TemplateParams, Declaration, RetainedNodes,
                                  ThrownTypes, Annotations, TargetFuncName));
   EXPECT_NE(N,
             DISubprogram::get(Context, Scope, Name, LinkageName, File, Line,
                               Type, ScopeLine, ContainingType, VirtualIndex,
-                              ThisAdjustment, Flags, SPFlags, Unit, getTuple(),
+                              ThisAdjustment, Flags, SPFlags, ShortBacktrace, Unit, getTuple(),
                               Declaration, RetainedNodes, ThrownTypes,
                               Annotations, TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(Context, Scope, Name, LinkageName, File, Line,
                                  Type, ScopeLine, ContainingType, VirtualIndex,
-                                 ThisAdjustment, Flags, SPFlags, Unit,
+                                 ThisAdjustment, Flags, SPFlags, ShortBacktrace, Unit,
                                  TemplateParams, getSubprogram(), RetainedNodes,
                                  ThrownTypes, Annotations, TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(Context, Scope, Name, LinkageName, File, Line,
                                  Type, ScopeLine, ContainingType, VirtualIndex,
-                                 ThisAdjustment, Flags, SPFlags, Unit,
+                                 ThisAdjustment, Flags, SPFlags, ShortBacktrace, Unit,
                                  TemplateParams, Declaration, getTuple(),
                                  ThrownTypes, Annotations, TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(Context, Scope, Name, LinkageName, File, Line,
                                  Type, ScopeLine, ContainingType, VirtualIndex,
-                                 ThisAdjustment, Flags, SPFlags, Unit,
+                                 ThisAdjustment, Flags, SPFlags, ShortBacktrace, Unit,
                                  TemplateParams, Declaration, RetainedNodes,
                                  getTuple(), Annotations, TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(Context, Scope, Name, LinkageName, File, Line,
                                  Type, ScopeLine, ContainingType, VirtualIndex,
-                                 ThisAdjustment, Flags, SPFlags, Unit,
+                                 ThisAdjustment, Flags, SPFlags, ShortBacktrace, Unit,
                                  TemplateParams, Declaration, RetainedNodes,
                                  ThrownTypes, getTuple(), TargetFuncName));
   EXPECT_NE(N, DISubprogram::get(Context, Scope, Name, LinkageName, File, Line,
                                  Type, ScopeLine, ContainingType, VirtualIndex,
-                                 ThisAdjustment, Flags, SPFlags, Unit,
+                                 ThisAdjustment, Flags, SPFlags, ShortBacktrace, Unit,
                                  TemplateParams, Declaration, RetainedNodes,
                                  ThrownTypes, Annotations, "other"));
 

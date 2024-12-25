@@ -985,7 +985,7 @@ void CoroCloner::create() {
             NewF->getName(), Decl->getFile(), Decl->getLine(), Decl->getType(),
             Decl->getScopeLine(), Decl->getContainingType(),
             Decl->getVirtualIndex(), Decl->getThisAdjustment(),
-            Decl->getFlags(), Decl->getSPFlags(), Decl->getUnit(),
+            Decl->getFlags(), Decl->getSPFlags(), Decl->getShortBacktrace(), Decl->getUnit(),
             Decl->getTemplateParams(), nullptr, Decl->getRetainedNodes(),
             Decl->getThrownTypes(), Decl->getAnnotations(),
             Decl->getTargetFuncName());

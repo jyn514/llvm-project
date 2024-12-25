@@ -866,7 +866,7 @@ TEST_F(IRBuilderTest, createFunction) {
   auto Error = DIB.getOrCreateArray({Int});
   auto Err = DIB.createFunction(
       CU, "err", "", File, 1, Type, 1, DINode::FlagZero,
-      DISubprogram::SPFlagDefinition | DISubprogram::SPFlagOptimized, nullptr,
+      DISubprogram::SPFlagDefinition | DISubprogram::SPFlagOptimized, std::nullopt, nullptr,
       nullptr, Error.get());
   EXPECT_TRUE(Err->getThrownTypes().get() == Error.get());
   DIB.finalize();
